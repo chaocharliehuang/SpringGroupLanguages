@@ -1,46 +1,40 @@
 package com.chaocharliehuang.grouplanguages.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.springframework.stereotype.Service;
 
 import com.chaocharliehuang.grouplanguages.models.Language;
+import com.chaocharliehuang.grouplanguages.repositories.LanguageRepository;
 
 @Service
 public class LanguageService {
 	
-	private ArrayList<Language> languages = new ArrayList<Language>(Arrays.asList(
-		new Language("Java", "James Gosling", "1.8"),
-		new Language("Python", "Guido van Rossum", "3.6"),
-		new Language("Javascript", "Brendon Eich", "1.9.5.23.247.2")
-		));
+	private LanguageRepository languageRepository;
+	
+	public LanguageService(LanguageRepository languageRepository) {
+		this.languageRepository = languageRepository;
+	}
 	
 	public ArrayList<Language> getLanguages() {
-		return languages;
+		return (ArrayList<Language>) languageRepository.findAll();
 	}
 	
 	public void addLanguage(Language language) {
-		languages.add(language);
+		languageRepository.save(language);
 	}
 	
-	public Language findLanguageByIndex(int index) {
-		if (index < languages.size()) {
-			return languages.get(index);
-		} else {
-			return null;
+	public Language findLanguageById(Long id) {
+		return languageRepository.findOne(id);
+	}
+	
+	public void deleteLanguage(Long id) {
+		if (languageRepository.exists(id)) {
+			languageRepository.delete(id);
 		}
 	}
 	
-	public void deleteLanguage(int index) {
-		if (index < languages.size()) {
-			languages.remove(index);
-		}
-	}
-	
-	public void updateLanguage(int index, Language language) {
-		if (index < languages.size()) {
-			languages.set(index, language);
-		}
+	public void updateLanguage(Language language) {
+		languageRepository.save(language);
 	}
 }

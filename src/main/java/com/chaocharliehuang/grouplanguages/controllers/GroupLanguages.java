@@ -1,7 +1,5 @@
 package com.chaocharliehuang.grouplanguages.controllers;
 
-import java.util.ArrayList;
-
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -28,8 +26,7 @@ public class GroupLanguages {
 	
 	@GetMapping("")
 	public String index(@ModelAttribute("language") Language language, Model model) {
-		ArrayList<Language> languages = languageService.getLanguages();
-		model.addAttribute("languages", languages);
+		model.addAttribute("languages", languageService.getLanguages());
 		return "index.jsp";
 	}
 	
@@ -39,8 +36,7 @@ public class GroupLanguages {
 			BindingResult result,
 			Model model) {
 		if (result.hasErrors()) {
-			ArrayList<Language> languages = languageService.getLanguages();
-			model.addAttribute("languages", languages);
+			model.addAttribute("languages", languageService.getLanguages());
 			return "index.jsp";
 		} else {
 			languageService.addLanguage(language);
@@ -48,22 +44,21 @@ public class GroupLanguages {
 		}
 	}
 	
-	@GetMapping("/{index}")
-	public String showLanguage(Model model, @PathVariable("index") int index) {
-		Language language = languageService.findLanguageByIndex(index);
-		model.addAttribute("language", language);
+	@GetMapping("/{id}")
+	public String showLanguage(Model model, @PathVariable("id") Long id) {
+		model.addAttribute("language", languageService.findLanguageById(id));
 		return "language.jsp";
 	}
 	
-	@GetMapping("/delete/{index}")
-	public String deleteLanguage(@PathVariable("index") int index) {
-		languageService.deleteLanguage(index);
+	@GetMapping("/delete/{id}")
+	public String deleteLanguage(@PathVariable("id") Long id) {
+		languageService.deleteLanguage(id);
 		return "redirect:/languages";
 	}
 	
-	@GetMapping("/edit/{index}")
-	public String editLanguage(@PathVariable("index") int index, Model model) {
-		Language language = languageService.findLanguageByIndex(index);
+	@GetMapping("/edit/{id}")
+	public String editLanguage(@PathVariable("id") Long id, Model model) {
+		Language language = languageService.findLanguageById(id);
 		if (language != null) {
 			model.addAttribute("language", language);
 			return "edit.jsp";
@@ -72,15 +67,15 @@ public class GroupLanguages {
 		}
 	}
 	
-	@PostMapping("/edit/{index}")
+	@PostMapping("/edit/{id}")
 	public String updateLanguage(
-			@PathVariable("index") int index,
+			@PathVariable("id") Long id,
 			@Valid @ModelAttribute("language") Language language,
 			BindingResult result) {
 		if (result.hasErrors()) {
 			return "edit.jsp";
 		} else {
-			languageService.updateLanguage(index, language);
+			languageService.updateLanguage(language);
 			return "redirect:/languages";
 		}
 	}
